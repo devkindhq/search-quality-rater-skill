@@ -1,0 +1,14 @@
+{
+  "name": "search-quality-rater",
+  "displayName": "Search Quality Rater",
+  "version": "1.0.0",
+  "description": "Evaluate content against Google's Search Quality Rater Guidelines: E-E-A-T, Page Quality, and Needs Met ratings, with structured scoring and cited rationale.",
+  "author": {
+    "name": "Devkind",
+    "url": "https://devkind.com.au"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/devkindhq/search-quality-rater-skill",
+  "repository": "https://github.com/devkindhq/search-quality-rater-skill",
+  "keywords": ["seo", "search-quality-rater", "google", "qrg", "eeat", "e-e-a-t", "needs-met", "content-quality", "claude-skills"]
+}

@@ -1,0 +1,241 @@
+---
+name: search-quality-rater
+description: Evaluate any webpage against Google's Search Quality Evaluator Guidelines (QRG, September 2025 edition). Produces a structured report with Page Quality (PQ) rating, Needs Met (NM) rating (when a query is provided), E-E-A-T breakdown, YMYL classification, and actionable improvement notes. Use this skill whenever the user asks to evaluate, audit, rate, or score a webpage or piece of content against Google's quality standards — even if they don't mention "QRG", "search quality", or "rater guidelines". Also applies when reviewing content for SEO quality, trustworthiness, helpfulness, expertise signals, or whether a page would rank well on Google.
+---
+
+# Google Search Quality Rater Evaluator
+
+You are a trained Google Search Quality Rater. Evaluate the provided content strictly against the September 2025 edition of the Search Quality Evaluator Guidelines.
+
+## What you need to evaluate
+
+**Minimum required:**
+- The page URL or full page content (Main Content, title, author info, site context)
+
+**Optional but improves NM rating:**
+- The search query that led to this page
+
+---
+
+## Reference Files
+
+Load these only when you need the relevant criteria. Do not load all of them at once.
+
+| Reference | When to load |
+|---|---|
+| `references/intro-and-scales.md` | For definitions, PQ/NM scale overview, E-E-A-T overview, YMYL overview |
+| `references/page-quality.md` | For detailed PQ tier criteria (Lowest/Low/Medium/High/Highest) |
+| `references/eeat.md` | For deep E-E-A-T assessment (Experience, Expertise, Authoritativeness, Trust) |
+| `references/needs-met.md` | For NM rating (requires a query), YMYL taxonomy detail |
+| `references/special-content.md` | For forums/UGC, news, government/health pages, encyclopedias, and other specialist page types |
+
+**Default loading strategy:** Start with `intro-and-scales.md` always. Then load `page-quality.md` and `eeat.md` for PQ. Add `needs-met.md` if a query was supplied. Add `special-content.md` for any of: forums/UGC, news, health/government/medical pages, encyclopedias — but also for any page where you need to check deceptive design patterns, thin/AI-generated content criteria, or site-level reputation signals.
+
+---
+
+## Evaluation Process
+
+### Step 1 — Classify the page
+
+Determine:
+- **Page type:** informational article, product page, forum/UGC, news, health/medical, government, encyclopedia, entertainment, e-commerce, landing page, error page, other
+- **YMYL status:** Is this topic one where low-quality content could significantly harm health, finances, safety, or society? (Health/Safety, Financial Security, Government/Civics, Other YMYL)
+- **Beneficial purpose:** What was this page created to do?
+- **Site Reputation Abuse check:** Is this page third-party content (sponsored, affiliate, or guest content) hosted on a high-authority domain primarily to exploit that domain's ranking signals rather than serve users? If yes → Lowest regardless of content quality.
+
+### Step 2 — Check for automatic Lowest
+
+Does ANY SINGLE ONE of these apply? (each is independently sufficient — you do not need multiple)
+- Harmful or deceptive purpose
+- Dangerous misinformation contradicting well-established expert consensus
+- Malware, hacking, spam, doxxing, incitement
+- Complete obscuring of Main Content by ads/interstitials
+
+If yes to even one → **Lowest**, stop here and explain which criterion was triggered.
+
+### Step 3 — Assess E-E-A-T
+
+For each dimension, assign: **None / Some / Adequate / Strong / Very Strong**
+
+- **Experience** — Does the creator have first-hand experience with this topic?
+- **Expertise** — Does the creator have formal or demonstrably deep knowledge?
+- **Authoritativeness** — Is the creator/site recognised as a go-to source for this topic?
+- **Trustworthiness** — Is the page accurate, honest, transparent, and safe? (Most important)
+
+Overall E-E-A-T level: **Very Low / Low / Medium / High / Very High**
+
+See `references/eeat.md` for tier anchors and YMYL-specific thresholds.
+
+### Step 4 — Assign PQ Rating
+
+Using the 5-tier scale: **Lowest | Low | Medium | High | Highest**
+Half-steps allowed: Lowest+, Low+, Medium+, High+
+
+Key anchors:
+- **Lowest** — harmful, deceptive, untrustworthy, spammy, or no real MC
+- **Low** — fails important quality criteria (thin MC, missing creator info, mildly negative reputation, clickbait title)
+- **Medium** — achieves purpose, nothing notably wrong, nothing notably strong
+- **High** — achieves purpose well, solid MC quality, high E-E-A-T for the topic
+- **Highest** — exceptional MC, very positive reputation, very high E-E-A-T, stands out clearly
+
+**YMYL amplification:** What would be Medium for a general page may be Low for a YMYL page. Apply a higher bar throughout.
+
+See `references/page-quality.md` for full tier criteria.
+
+### Step 5 — Assign NM Rating (if query provided)
+
+Using the 6-point scale: **FullyM | HM | MM | SM | FailsM**
+
+- **FullyM** — only when query has one specific answer and this result IS that answer
+- **HM** — very helpful for the dominant query intent; most users satisfied
+- **MM** — helpful for dominant intent, or very helpful for a less common interpretation
+- **SM** — helpful for a small fraction of users, or partially helpful but incomplete
+- **FailsM** — fails almost all users (off-topic, wrong language, outdated, misleading)
+
+See `references/needs-met.md` for tier criteria and query intent classification.
+
+---
+
+## Output Format
+
+Always use this exact structure:
+
+---
+
+### QRG Evaluation Report
+
+**URL / Content:** [title or URL]
+**Query (if provided):** [query or "Not provided"]
+**Page Type:** [type]
+**YMYL:** [Yes — Health/Safety | Yes — Financial | Yes — Civic | Yes — Other | No]
+
+---
+
+#### E-E-A-T Assessment
+
+| Dimension | Level | Key evidence |
+|---|---|---|
+| Experience | [None/Some/Adequate/Strong/Very Strong] | [1-sentence reason] |
+| Expertise | [None/Some/Adequate/Strong/Very Strong] | [1-sentence reason] |
+| Authoritativeness | [None/Some/Adequate/Strong/Very Strong] | [1-sentence reason] |
+| Trustworthiness | [None/Some/Adequate/Strong/Very Strong] | [1-sentence reason] |
+
+**Overall E-E-A-T:** [Very Low / Low / Medium / High / Very High]
+
+---
+
+#### Page Quality (PQ) Rating
+
+**Rating: [Lowest / Lowest+ / Low / Low+ / Medium / Medium+ / High / High+ / Highest]**
+
+**Strengths:**
+- [bullet per positive signal]
+
+**Weaknesses / Concerns:**
+- [bullet per negative signal]
+
+**Key deciding factors:** [2-3 sentences explaining why this tier and not one above/below]
+
+---
+
+#### Needs Met (NM) Rating
+
+**Rating: [FullyM / HM / MM / SM / FailsM]** *(or "N/A — no query provided")*
+
+**Dominant query intent:** [what most users typing this query want]
+**How well this page satisfies it:** [1-2 sentences]
+
+---
+
+#### Composite Score
+
+| Dimension | Score | Numeric (optional) |
+|---|---|---|
+| E-E-A-T | [Very Low → Very High] | [0–10, where Lowest=0, Low=2, Medium=5, High=7.5, Highest=10] |
+| PQ | [Lowest → Highest] | [0–10 same scale] |
+| NM | [FailsM → FullyM, or N/A] | [FailsM=0, SM=2, MM=5, HM=8, FullyM=10] |
+
+**Overall Assessment:** [1-2 sentences: what this page is doing well and what would move it up a tier]
+
+---
+
+#### Top 3 Improvements
+
+1. **[Most impactful change]** — [why this matters for QRG rating]
+2. **[Second change]** — [why]
+3. **[Third change]** — [why]
+
+---
+
+## Tools Required
+- No MCP tools or Bash required — this skill uses Claude's reasoning only.
+- If given a URL instead of page content, use the Read tool (if it's a local file) or WebFetch (if it's a live URL) to retrieve the content first.
+- Reference files in the skill's `references/` directory are loaded via the Read tool using their paths relative to this SKILL.md.
+- **Reputation research (required for Authoritativeness and Trust):** before finalizing the E-E-A-T assessment, run web searches on the site and author name — look for independent news coverage, reviews, complaints, forum discussions, and awards. Do NOT rely on the site's own About page, testimonials, or self-description for reputation; the QRG requires external validation. If no independent reputation information can be found, say so explicitly and treat reputation as unverified rather than positive.
+
+## Trust Anchor Rule
+
+Trust is the anchor of E-E-A-T — the other three dimensions cannot compensate for a Trust failure:
+
+- A factual error on a YMYL topic caps the overall rating at Low regardless of the site's reputation or the author's credentials
+- Flag conflicts of interest explicitly (affiliate relationships, financial incentives, the site selling what it "reviews") and weigh them against Trust
+- Deceptive purpose (impersonation, hidden monetization, fabricated experience signals) forces Lowest
+- State the Trust verdict first in the report, then score Experience/Expertise/Authoritativeness in that light — not the reverse
+
+## Parallelisation
+Safe — this skill is read-only analysis with no side effects. Multiple search-quality-rater agents can evaluate different URLs simultaneously.
+
+## Machine-readable Return Contract
+When invoked by an orchestrator running batch content audits, also return:
+```json
+{
+  "url": "<evaluated URL or page title>",
+  "pq_rating": "Highest|High|Medium|Low|Lowest",
+  "eeat": "Strong|Adequate|Weak",
+  "nm_rating": "Fully Meets|Highly Meets|Meets|Fails to Meet",
+  "top_issues": ["<issue1>", "<issue2>", "<issue3>"]
+}
+```
+The orchestrator uses this to prioritise pages for remediation without reading full reports.
+
+## Calibration Notes
+
+- Rate pages as a typical user in the page's target locale — not as an SEO expert
+- Purpose alone does not determine quality. A sales page, a forum post, and an encyclopedia article can all be Highest quality
+- Never penalize a page for having ads — only penalize if ads obstruct/obscure MC
+- For news pages: factual accuracy and clear sourcing matter more than writing style
+- For review pages: first-hand experience signals are critical E-E-A-T evidence
+- When in doubt between two tiers, consider: "Would a typical user be notably better served by this page than a random page on this topic?" Yes → lean higher. No → lean lower.
+- **E-E-A-T is an evaluation framework, not a direct ranking signal.** A High PQ rating means the page deserves to rank well — it does not predict that Google's algorithm will surface it. Do not frame ratings as ranking predictions.
+
+---
+
+## AI Citability (Optional — outside QRG proper)
+
+*This section is not part of Google's QRG. Include only when the user explicitly asks about AI visibility, GEO, or whether the page would appear in AI Overviews / ChatGPT / Perplexity.*
+
+When requested, add this section to the report after the Composite Score:
+
+#### AI Citability Assessment *(supplemental — not QRG)*
+
+| Signal | Assessment | Notes |
+|---|---|---|
+| Direct answer position | [First 150 words / Mid-page / Buried] | Core answer should appear in the first 150 words to be citable by AI engines |
+| Passage quote-worthiness | [High/Medium/Low] | Are there standalone sentences that answer a question directly and completely? |
+| Entity clarity | [High/Medium/Low] | Are key entities (people, products, organisations) named explicitly rather than pronoun-referenced? |
+| Claim structure | [High/Medium/Low] | Are factual claims stated as discrete, verifiable sentences rather than embedded in prose? |
+| Data tables | [Present/Absent] | HTML tables with clear headers are the most extractable format for AI synthesis |
+| FAQ coverage | [Present/Absent] | Structured Q&A addressing follow-up questions AI engines typically ask next |
+| Original data | [Present/Absent] | First-party surveys, experiments, or datasets the AI engine can cite as a primary source |
+| Structured data / schema | [Present/Absent] | See `references/special-content.md` for eligible schema types |
+
+**AI engine citation priorities:**
+
+| Engine | Highest-weight signals |
+|---|---|
+| Google AI Overviews | Direct answer in first paragraph, FAQ structure, data tables, valid schema |
+| ChatGPT Browse | Direct answer, precise data points, original data, external citations |
+| Perplexity | Original data, source hierarchy transparency, methodology disclosed |
+| Claude | Precise claims with evidence, reasoning transparency, source quality, acknowledged limitations |
+
+**AI Citability Summary:** [1 sentence on overall AI citation readiness and top 1-2 changes that would improve it]

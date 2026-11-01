@@ -1,0 +1,16 @@
+{
+  "name": "search-quality-rater",
+  "description": "Claude Code skill that rates webpages against Google's Search Quality Rater Guidelines: E-E-A-T, Page Quality and Needs Met.",
+  "owner": {
+    "name": "Devkind",
+    "url": "https://devkind.com.au"
+  },
+  "plugins": [
+    {
+      "name": "search-quality-rater",
+      "source": ".",
+      "description": "Rate any webpage against the Search Quality Rater Guidelines with cited E-E-A-T, Page Quality and Needs Met ratings.",
+      "category": "development"
+    }
+  ]
+}
